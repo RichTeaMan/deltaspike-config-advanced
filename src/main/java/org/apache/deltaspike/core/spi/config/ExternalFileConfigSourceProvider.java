@@ -79,7 +79,6 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
 
     final List<ConfigSource> configSourceList = new ArrayList<>();
 
-
     try {
       final Enumeration<URL> propertyFileUrls =
           PropertyFileUtils.resolvePropertyFiles(getPropertryFile());
@@ -110,17 +109,19 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
               && propertyDirFile.getName().endsWith(FILE_SUFFIX)) {
             LOG.fine("Adding file config source from directory");
             configSource = new ExternalFileConfigSource(prefix, propertyFileUrl, propertyDirFile);
-          } else {
-            LOG.fine("Adding file config source without directory");
-            configSource = new ExternalFileConfigSource(prefix, propertyFileUrl);
           }
+        } else {
+          LOG.fine("Adding file config source without directory");
+          configSource = new ExternalFileConfigSource(prefix, propertyFileUrl);
+        }
 
-          if (configSource != null) {
-            configSourceList.add(configSource);
-          }
+        if (configSource != null) {
+          configSourceList.add(configSource);
         }
       }
-    } catch (IOException ioe) {
+    } catch (
+
+    IOException ioe) {
       LOG.log(Level.WARNING,
           String.format("Could not read from properties file", getPropertryFile()), ioe);
     }
