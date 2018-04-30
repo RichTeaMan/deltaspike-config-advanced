@@ -29,104 +29,114 @@ import org.apache.deltaspike.core.util.StringUtils;
 /**
  * External file config source provider.
  */
-public abstract class ExternalFileConfigSourceProvider implements ConfigSourceProvider {
+public abstract class ExternalFileConfigSourceProvider implements ConfigSourceProvider
+{
 
-  /** Logger. */
-  private static final Logger LOG =
-      Logger.getLogger(ExternalFileConfigSourceProvider.class.getName());
+    /** Logger. */
+    private static final Logger LOG = Logger.getLogger(ExternalFileConfigSourceProvider.class.getName());
 
-  /** The file extension a properties file requires. */
-  private static final String FILE_SUFFIX = ".properties";
+    /** The file extension a properties file requires. */
+    private static final String FILE_SUFFIX = ".properties";
 
-  /**
-   * Gets a prefix used for both the property and property file names.
-   * 
-   * A property file will only be read if it's name begins with this prefix. All properties in that
-   * file will have the same prefix added to the front of their key with a dot.
-   * 
-   * Classes implementing this method SHOULD NOT end the prefix with a '.', this wil lbe added
-   * later.
-   * 
-   * @return The property prefix.
-   */
-  public abstract String getPrefix();
+    /**
+     * Gets a prefix used for both the property and property file names.
+     * 
+     * A property file will only be read if it's name begins with this prefix. All properties in that file will have the
+     * same prefix added to the front of their key with a dot.
+     * 
+     * Classes implementing this method SHOULD NOT end the prefix with a '.', this wil lbe added later.
+     * 
+     * @return The property prefix.
+     */
+    public abstract String getPrefix();
 
-  /**
-   * Get the configuration folder key.
-   * 
-   * @return Configuration folder key.
-   */
-  public abstract String getConfigurationFolderKey();
+    /**
+     * Get the configuration folder key.
+     * 
+     * @return Configuration folder key.
+     */
+    public abstract String getConfigurationFolderKey();
 
-  /**
-   * Get the name of the property file.
-   * 
-   * @return Property file name.
-   */
-  public abstract String getPropertryFile();
+    /**
+     * Get the name of the property file.
+     * 
+     * @return Property file name.
+     */
+    public abstract String getPropertryFile();
 
-  /**
-   * {@inheritDoc}.
-   */
-  @Override
-  public List<ConfigSource> getConfigSources() {
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public List<ConfigSource> getConfigSources()
+    {
 
-    LOG.fine("Getting config sources");
+        LOG.fine("Getting config sources");
 
-    if (getPrefix() == null) {
-      throw new IllegalStateException("Prefix must be set");
-    }
-
-    final List<ConfigSource> configSourceList = new ArrayList<>();
-
-    try {
-      final Enumeration<URL> propertyFileUrls =
-          PropertyFileUtils.resolvePropertyFiles(getPropertryFile());
-
-      final String propertyPath = System.getProperty(getConfigurationFolderKey());
-
-      File propertyDir = null;
-      if (StringUtils.isNotEmpty(propertyPath)) {
-        propertyDir = new File(propertyPath);
-      }
-
-      final String prefix = getPrefix();
-
-      while (propertyFileUrls.hasMoreElements()) {
-        final URL propertyFileUrl = propertyFileUrls.nextElement();
-
-        LOG.fine(String.format("Custom config found: name: '%s', URL: '%s', prefix: '%s'",
-            getPropertryFile(), propertyFileUrl, getPrefix()));
-
-        ExternalFileConfigSource configSource = null;
-
-        if (propertyDir != null && propertyDir.exists() && propertyDir.isDirectory()) {
-          final File propertyDirFile =
-              new File((propertyPath.endsWith("/") || propertyPath.endsWith("\\") ? propertyPath
-                  : propertyPath + "/") + getPropertryFile());
-
-          if (propertyDirFile.getName().equals(getPropertryFile())
-              && propertyDirFile.getName().endsWith(FILE_SUFFIX)) {
-            LOG.fine("Adding file config source from directory");
-            configSource = new ExternalFileConfigSource(prefix, propertyFileUrl, propertyDirFile);
-          }
-        } else {
-          LOG.fine("Adding file config source without directory");
-          configSource = new ExternalFileConfigSource(prefix, propertyFileUrl);
+        if (getPrefix() == null)
+        {
+            throw new IllegalStateException("Prefix must be set");
         }
 
-        if (configSource != null) {
-          configSourceList.add(configSource);
+        final List<ConfigSource> configSourceList = new ArrayList<>();
+
+        try
+        {
+            final Enumeration<URL> propertyFileUrls = PropertyFileUtils.resolvePropertyFiles(getPropertryFile());
+
+            final String propertyPath = System.getProperty(getConfigurationFolderKey());
+
+            File propertyDir = null;
+            if (StringUtils.isNotEmpty(propertyPath))
+            {
+                propertyDir = new File(propertyPath);
+            }
+
+            final String prefix = getPrefix();
+
+            while (propertyFileUrls.hasMoreElements())
+            {
+                final URL propertyFileUrl = propertyFileUrls.nextElement();
+
+                LOG.fine(String.format("Custom config found: name: '%s', URL: '%s', prefix: '%s'",
+                        getPropertryFile(), propertyFileUrl, getPrefix()));
+
+                ExternalFileConfigSource configSource = null;
+
+                if (propertyDir != null && propertyDir.exists() && propertyDir.isDirectory())
+                {
+                    final File propertyDirFile = new File(
+                            (propertyPath.endsWith("/") || propertyPath.endsWith("\\") ? propertyPath
+                                    : propertyPath + "/") + getPropertryFile());
+
+                    if (propertyDirFile.getName().equals(getPropertryFile())
+                            && propertyDirFile.getName().endsWith(FILE_SUFFIX))
+                    {
+                        LOG.fine("Adding file config source from directory");
+                        configSource = new ExternalFileConfigSource(prefix, propertyFileUrl, propertyDirFile);
+                    }
+                }
+                else
+                {
+                    LOG.fine("Adding file config source without directory");
+                    configSource = new ExternalFileConfigSource(prefix, propertyFileUrl);
+                }
+
+                if (configSource != null)
+                {
+                    configSourceList.add(configSource);
+                }
+            }
         }
-      }
-    } catch (
+        catch (
 
-    IOException ioe) {
-      LOG.log(Level.WARNING,
-          String.format("Could not read from properties file", getPropertryFile()), ioe);
+        IOException ioe)
+        {
+            LOG.log(Level.WARNING,
+                    String.format("Could not read from properties file", getPropertryFile()), ioe);
+        }
+
+        return configSourceList;
     }
-
-    return configSourceList;
-  }
 
 }

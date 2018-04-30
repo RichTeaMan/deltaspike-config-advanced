@@ -27,139 +27,161 @@ import org.apache.deltaspike.core.util.PropertyFileUtils;
 /**
  * Read properties from an external file.
  */
-public class ExternalFileConfigSource implements ConfigSource {
+public class ExternalFileConfigSource implements ConfigSource
+{
 
-  /** File name. */
-  private String fileName;
+    /** File name. */
+    private String fileName;
 
-  /** Prefix. */
-  private String prefix;
+    /** Prefix. */
+    private String prefix;
 
-  /** Key for property. */
-  private String propertyKey = "$%s{%s}";
+    /** Key for property. */
+    private String propertyKey = "$%s{%s}";
 
-  /** Ordinal specifies configuration priority. High value is highest priority. */
-  private int ordinal = 150;
+    /** Ordinal specifies configuration priority. High value is highest priority. */
+    private int ordinal = 150;
 
-  /** Properties. */
-  private final Properties properties;
+    /** Properties. */
+    private final Properties properties;
 
-  /**
-   * Create external file configuration.
-   * 
-   * @param prefix Prefix.
-   * @param propertyFileUrl Property file URL.
-   * @throws IOException IO Exception.
-   */
-  public ExternalFileConfigSource(final String prefix, final URL propertyFileUrl)
-      throws IOException {
-    this(prefix, propertyFileUrl, null);
-  }
-
-  /**
-   * Create external file configuration.
-   * 
-   * @param prefix Prefix.
-   * @param propertyFileUrl Property file URL.
-   * @param file File.
-   * @throws IOException IO Exception.
-   */
-  public ExternalFileConfigSource(final String prefix, final URL propertyFileUrl, final File file)
-      throws IOException {
-
-    final Properties properties = PropertyFileUtils.loadProperties(propertyFileUrl);
-
-    final Properties overloadedProperties = new Properties();
-
-    if (null != file) {
-      try (final FileInputStream propertiesStream = new FileInputStream(file.getAbsolutePath())) {
-        overloadedProperties.load(propertiesStream);
-      }
+    /**
+     * Create external file configuration.
+     * 
+     * @param prefix
+     *            Prefix.
+     * @param propertyFileUrl
+     *            Property file URL.
+     * @throws IOException
+     *             IO Exception.
+     */
+    public ExternalFileConfigSource(final String prefix, final URL propertyFileUrl)
+            throws IOException
+    {
+        this(prefix, propertyFileUrl, null);
     }
 
-    final Properties prefixedProperties = new Properties();
+    /**
+     * Create external file configuration.
+     * 
+     * @param prefix
+     *            Prefix.
+     * @param propertyFileUrl
+     *            Property file URL.
+     * @param file
+     *            File.
+     * @throws IOException
+     *             IO Exception.
+     */
+    public ExternalFileConfigSource(final String prefix, final URL propertyFileUrl, final File file)
+            throws IOException
+    {
 
-    for (final Object keyObject : properties.keySet()) {
-      final String key = (String) keyObject;
-      final Object value = properties.get(keyObject);
+        final Properties properties = PropertyFileUtils.loadProperties(propertyFileUrl);
 
-      prefixedProperties.put(String.format(propertyKey, prefix, key), value);
+        final Properties overloadedProperties = new Properties();
+
+        if (null != file)
+        {
+            try (final FileInputStream propertiesStream = new FileInputStream(file.getAbsolutePath()))
+            {
+                overloadedProperties.load(propertiesStream);
+            }
+        }
+
+        final Properties prefixedProperties = new Properties();
+
+        for (final Object keyObject : properties.keySet())
+        {
+            final String key = (String) keyObject;
+            final Object value = properties.get(keyObject);
+
+            prefixedProperties.put(String.format(propertyKey, prefix, key), value);
+        }
+
+        for (final Object keyObject : overloadedProperties.keySet())
+        {
+            final String key = (String) keyObject;
+            final Object value = overloadedProperties.get(keyObject);
+
+            prefixedProperties.put(String.format(propertyKey, prefix, key), value);
+        }
+
+        this.properties = prefixedProperties;
+        fileName = propertyFileUrl.toExternalForm();
+        this.prefix = prefix;
     }
 
-    for (final Object keyObject : overloadedProperties.keySet()) {
-      final String key = (String) keyObject;
-      final Object value = overloadedProperties.get(keyObject);
-
-      prefixedProperties.put(String.format(propertyKey, prefix, key), value);
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public String getPropertyValue(final String key)
+    {
+        return properties.getProperty(key);
     }
 
-    this.properties = prefixedProperties;
-    fileName = propertyFileUrl.toExternalForm();
-    this.prefix = prefix;
-  }
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public Map<String, String> getProperties()
+    {
+        final Map<String, String> result = new HashMap<>();
 
-  /**
-   * {@inheritDoc}.
-   */
-  @Override
-  public String getPropertyValue(final String key) {
-    return properties.getProperty(key);
-  }
+        for (final String propertyName : properties.stringPropertyNames())
+        {
+            result.put(propertyName, properties.getProperty(propertyName));
+        }
 
-  /**
-   * {@inheritDoc}.
-   */
-  @Override
-  public Map<String, String> getProperties() {
-    final Map<String, String> result = new HashMap<>();
-
-    for (final String propertyName : properties.stringPropertyNames()) {
-      result.put(propertyName, properties.getProperty(propertyName));
+        return result;
     }
 
-    return result;
-  }
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public String getConfigName()
+    {
+        return fileName;
+    }
 
-  /**
-   * {@inheritDoc}.
-   */
-  @Override
-  public String getConfigName() {
-    return fileName;
-  }
+    /**
+     * Get the prefix.
+     * 
+     * @return Prefix.
+     */
+    public String getPrefix()
+    {
+        return prefix;
+    }
 
-  /**
-   * Get the prefix.
-   * 
-   * @return Prefix.
-   */
-  public String getPrefix() {
-    return prefix;
-  }
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public int getOrdinal()
+    {
+        return ordinal;
+    }
 
-  /**
-   * {@inheritDoc}.
-   */
-  @Override
-  public int getOrdinal() {
-    return ordinal;
-  }
+    /**
+     * Set the ordinal. Ordinal specifies the config priority, high value is the highest priority. Defaults to 150.
+     * 
+     * @param ordinal
+     *            Ordinal.
+     */
+    public void setOrdinal(final int ordinal)
+    {
+        this.ordinal = ordinal;
+    }
 
-  /**
-   * Set the ordinal. Ordinal specifies the config priority, high value is the highest priority.
-   * Defaults to 150.
-   * 
-   * @param ordinal Ordinal.
-   */
-  public void setOrdinal(final int ordinal) {
-    this.ordinal = ordinal;
-  }
-
-  /**
-   * {@inheritDoc}.
-   */
-  @Override
-  public boolean isScannable() {
-    return true;
-  }
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean isScannable()
+    {
+        return true;
+    }
 }
