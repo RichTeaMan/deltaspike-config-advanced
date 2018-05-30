@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.deltaspike.core.spi.config;
+package com.bearingsoftware.deltaspike.config;
 
 import java.util.List;
 import java.util.Map;
 
+import org.apache.deltaspike.core.spi.config.ConfigSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

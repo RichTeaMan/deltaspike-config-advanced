@@ -1,1 +1,1 @@
-org.apache.deltaspike.core.spi.config.TestExternalFileConfigSourceProvider
+com.bearingsoftware.deltaspike.config.TestExternalFileConfigSourceProvider

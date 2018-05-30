@@ -12,7 +12,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.deltaspike.core.spi.config;
+package com.bearingsoftware.deltaspike.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.deltaspike.core.spi.config.ConfigSource;
+import org.apache.deltaspike.core.spi.config.ConfigSourceProvider;
 import org.apache.deltaspike.core.util.PropertyFileUtils;
 import org.apache.deltaspike.core.util.StringUtils;
 
@@ -62,7 +64,7 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
      * 
      * @return Property file name.
      */
-    public abstract String getPropertryFile();
+    public abstract String getPropertyFile();
 
     /**
      * {@inheritDoc}.
@@ -82,7 +84,7 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
 
         try
         {
-            final Enumeration<URL> propertyFileUrls = PropertyFileUtils.resolvePropertyFiles(getPropertryFile());
+            final Enumeration<URL> propertyFileUrls = PropertyFileUtils.resolvePropertyFiles(getPropertyFile());
 
             final String propertyPath = System.getProperty(getConfigurationFolderKey());
 
@@ -99,7 +101,7 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
                 final URL propertyFileUrl = propertyFileUrls.nextElement();
 
                 LOG.fine(String.format("Custom config found: name: '%s', URL: '%s', prefix: '%s'",
-                        getPropertryFile(), propertyFileUrl, getPrefix()));
+                        getPropertyFile(), propertyFileUrl, getPrefix()));
 
                 ExternalFileConfigSource configSource = null;
 
@@ -107,9 +109,9 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
                 {
                     final File propertyDirFile = new File(
                             (propertyPath.endsWith("/") || propertyPath.endsWith("\\") ? propertyPath
-                                    : propertyPath + "/") + getPropertryFile());
+                                    : propertyPath + "/") + getPropertyFile());
 
-                    if (propertyDirFile.getName().equals(getPropertryFile())
+                    if (propertyDirFile.getName().equals(getPropertyFile())
                             && propertyDirFile.getName().endsWith(FILE_SUFFIX))
                     {
                         LOG.fine("Adding file config source from directory");
@@ -133,7 +135,7 @@ public abstract class ExternalFileConfigSourceProvider implements ConfigSourcePr
         IOException ioe)
         {
             LOG.log(Level.WARNING,
-                    String.format("Could not read from properties file", getPropertryFile()), ioe);
+                    String.format("Could not read from properties file", getPropertyFile()), ioe);
         }
 
         return configSourceList;

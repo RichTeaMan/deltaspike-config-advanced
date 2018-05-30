@@ -12,7 +12,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.deltaspike.core.spi.config;
+package com.bearingsoftware.deltaspike.config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.deltaspike.core.spi.config.ConfigSource;
 import org.apache.deltaspike.core.util.PropertyFileUtils;
 
 /**

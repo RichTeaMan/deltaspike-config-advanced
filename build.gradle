@@ -1,50 +1,60 @@
-// setup the Spring Dependency Management Plugin for Gradle, to import BOMs.
 plugins {
     id "io.spring.dependency-management" version "1.0.5.RELEASE"
-    id "java" // you'll likely also want the WAR plugin
+    id "java-library"
 }
 
-ext.weldVersion = '2.4.7.Final'
+ext.deltaspikeVersion="1.8.1"
+ext.weldVersion="2.4.7.Final"
 ext.slf4jVersion="1.7.21"
 ext.logbackVersion="1.1.7"
+ext.snakeyamlVesion="1.21"
+ext.mockitoVersion="1.10.19"
+ext.junitVersion="4.12"
+ext.commonsIoVersion="2.6"
+ext.mustacheVersion="0.9.5"
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
+
 dependencyManagement {
     imports {
-        mavenBom 'org.apache.deltaspike.distribution:distributions-bom:1.8.1'
+        mavenBom "org.apache.deltaspike.distribution:distributions-bom:$deltaspikeVersion"
     }
 }
 dependencies {
-    compile 'org.apache.deltaspike.core:deltaspike-core-api'
-    runtime 'org.apache.deltaspike.core:deltaspike-core-impl'
-    compile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api'
-    runtime 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld'
-    runtime 'org.jboss.weld.se:weld-se:'+weldVersion
-    compile 'org.yaml:snakeyaml:1.21'
-    
+    implementation "org.apache.deltaspike.core:deltaspike-core-api"
+    runtime "org.apache.deltaspike.core:deltaspike-core-impl"
+    implementation "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api"
+    runtime "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"
+    runtime "org.jboss.weld.se:weld-se:$weldVersion"
+    api "org.yaml:snakeyaml:$snakeyamlVesion"
+    api "javax.enterprise:cdi-api:1.2"
+
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.slf4j:jul-to-slf4j:$slf4jVersion"
     compile "ch.qos.logback:logback-core:$logbackVersion"
     compile "ch.qos.logback:logback-classic:$logbackVersion"
-    
+
+    compile "com.github.spullara.mustache.java:compiler:$mustacheVersion"
+    compile "commons-io:commons-io:$commonsIoVersion"
+
     //Test
-    compile 'junit:junit:4.12'
-    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl'
-    testRuntime 'org.apache.deltaspike.modules:deltaspike-test-control-module-api'
-    testCompile 'org.mockito:mockito-all:1.10.19'
-    
-    testCompile 'org.jboss.weld.se:weld-se-core:'+weldVersion
-    testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld'
+    compile "junit:junit:$junitVersion"
+    testCompile "org.apache.deltaspike.modules:deltaspike-test-control-module-impl"
+    testRuntime "org.apache.deltaspike.modules:deltaspike-test-control-module-api"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+
+    testCompile "org.jboss.weld.se:weld-se-core:$weldVersion"
+    testCompile "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"
 }
 
+// CDI workaround, CDI expects beans.xml to be in your classes directory
 sourceSets {
     main {
-        //To use standard bean discovery mechanisms, CDI expects beans.xml to be in your classes directory
         output.resourcesDir = output.classesDir
     }
     test {
         output.resourcesDir = output.classesDir
-    } // and any other sourceSet you might have.
+    }
 }

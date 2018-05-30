@@ -16,30 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.deltaspike.core.spi.config;
+package com.bearingsoftware.deltaspike.config;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.yaml.snakeyaml.Invoice;
+
 /**
- * Test class extending {@link ExternalFileConfigSourceProvider}.
+ * Test class extending {@link YmlFileConfigSourceProvider}.
  */
 @ApplicationScoped
-public class TestExternalFileConfigSourceProvider extends ExternalFileConfigSourceProvider
+public class TestYmlFileConfigSourceProvider extends YmlFileConfigSourceProvider
 {
-    /** Prefix. */
-    private static final String PREFIX = "test";
 
     /** Property file name. */
-    private static final String PROPERTY_FILE = "test.properties";
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public String getPrefix()
-    {
-        return PREFIX;
-    }
+    private static final String PROPERTY_FILE = "test.yaml";
 
     /**
      * {@inheritDoc}.
@@ -47,16 +38,20 @@ public class TestExternalFileConfigSourceProvider extends ExternalFileConfigSour
     @Override
     public String getConfigurationFolderKey()
     {
-        return "test.properties.folder";
+        return "yaml.properties.folder";
     }
 
     /**
      * {@inheritDoc}.
      */
     @Override
-    public String getPropertryFile()
+    public String getPropertyFile()
     {
         return PROPERTY_FILE;
     }
 
+    public Class<?> getConfiguration()
+    {
+        return Invoice.class;
+    }
 }
