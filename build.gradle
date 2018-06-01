@@ -1,70 +1,34 @@
 plugins {
     id "io.spring.dependency-management" version "1.0.5.RELEASE"
-    id "java-library"
-}
-
-ext.deltaspikeVersion="1.8.1"
-ext.weldVersion="2.4.7.Final"
-ext.slf4jVersion="1.7.21"
-ext.logbackVersion="1.1.7"
-ext.snakeyamlVesion="1.21"
-ext.mockitoVersion="1.10.19"
-ext.junitVersion="4.12"
-ext.commonsIoVersion="2.6"
-ext.mustacheVersion="0.9.5"
-
-repositories {
-    jcenter()
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.apache.deltaspike.distribution:distributions-bom:$deltaspikeVersion"
-    }
 }
 
 version = '0.1.0'
 
-jar {
-    manifest {
-        attributes('Implementation-Title': project.name,
-                   'Implementation-Version': project.version)
+subprojects {
+
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+    apply from: '../commons.gradle'
+
+	repositories {
+	    jcenter()
+	}
+
+    jar {
+        manifest {
+            attributes('Implementation-Title': project.name,
+                       'Implementation-Version': project.version)
+        }
     }
+
+    // CDI workaround, CDI expects beans.xml to be in your classes directory
+	sourceSets {
+	    main {
+	        output.resourcesDir = output.classesDir
+	    }
+	    test {
+	        output.resourcesDir = output.classesDir
+	    }
+	}
 }
 
-dependencies {
-    implementation "org.apache.deltaspike.core:deltaspike-core-api"
-    runtime "org.apache.deltaspike.core:deltaspike-core-impl"
-    implementation "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api"
-    runtime "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"
-    runtime "org.jboss.weld.se:weld-se:$weldVersion"
-    api "org.yaml:snakeyaml:$snakeyamlVesion"
-    api "javax.enterprise:cdi-api:1.2"
-
-    api "org.slf4j:slf4j-api:$slf4jVersion"
-    implementation "org.slf4j:jul-to-slf4j:$slf4jVersion"
-    implementation "ch.qos.logback:logback-core:$logbackVersion"
-    implementation "ch.qos.logback:logback-classic:$logbackVersion"
-
-    implementation "com.github.spullara.mustache.java:compiler:$mustacheVersion"
-    implementation "commons-io:commons-io:$commonsIoVersion"
-
-    //Test
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.apache.deltaspike.modules:deltaspike-test-control-module-impl"
-    testRuntime "org.apache.deltaspike.modules:deltaspike-test-control-module-api"
-    testImplementation "org.mockito:mockito-all:$mockitoVersion"
-
-    testImplementation "org.jboss.weld.se:weld-se-core:$weldVersion"
-    testImplementation "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"
-}
-
-// CDI workaround, CDI expects beans.xml to be in your classes directory
-sourceSets {
-    main {
-        output.resourcesDir = output.classesDir
-    }
-    test {
-        output.resourcesDir = output.classesDir
-    }
-}

@@ -1,0 +1,20 @@
+dependencies {
+    implementation libs.cdi_impl
+    runtime libs.cdi_api
+    runtime libs.cdi_runtime
+    api libs.snakeyaml
+    api libs.cdi_api
+
+    api libs.logging_api
+    implementation libs.logging_impl
+
+    implementation libs.mustache
+    implementation libs.commons_io
+
+    //Test
+    testImplementation libs.junit
+    testImplementation libs.mockito
+
+    testRuntime libs.cdi_test_runtime
+    testImplementation libs.cdi_test_impl
+}

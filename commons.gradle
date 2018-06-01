@@ -1,0 +1,53 @@
+ext.deltaspikeVersion="1.8.1"
+ext.weldVersion="2.4.7.Final"
+ext.slf4jVersion="1.7.21"
+ext.logbackVersion="1.1.7"
+ext.snakeyamlVesion="1.21"
+ext.mockitoVersion="1.10.19"
+ext.junitVersion="4.12"
+ext.commonsIoVersion="2.6"
+ext.mustacheVersion="0.9.5"
+ext.cdiApiVersion="1.2"
+
+dependencyManagement {
+    imports {
+        mavenBom "org.apache.deltaspike.distribution:distributions-bom:$deltaspikeVersion"
+    }
+}
+
+ext.libs = [
+    // CDI
+    cdi_api: "javax.enterprise:cdi-api:$cdiApiVersion",
+    cdi_impl: [
+        "org.apache.deltaspike.core:deltaspike-core-api",
+        "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api"
+    ],
+    cdi_runtime: [
+	    "org.apache.deltaspike.core:deltaspike-core-impl",
+	    "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
+	    "org.jboss.weld.se:weld-se:$weldVersion"
+    ],
+
+    // Logging
+    logging_api: "org.slf4j:slf4j-api:$slf4jVersion",
+    logging_impl: [
+        "org.slf4j:jul-to-slf4j:$slf4jVersion",
+        "ch.qos.logback:logback-core:$logbackVersion",
+        "ch.qos.logback:logback-classic:$logbackVersion"
+    ],
+
+    // Other dependencies
+    snakeyaml: "org.yaml:snakeyaml:$snakeyamlVesion",
+    mustache: "com.github.spullara.mustache.java:compiler:$mustacheVersion",
+    commons_io: "commons-io:commons-io:$commonsIoVersion",
+
+    // Test dependencies
+    junit: "junit:junit:$junitVersion",
+    mockito: "org.mockito:mockito-all:$mockitoVersion",
+    cdi_test_runtime: "org.apache.deltaspike.modules:deltaspike-test-control-module-api",
+    cdi_test_impl: [
+        "org.apache.deltaspike.modules:deltaspike-test-control-module-impl",
+        "org.jboss.weld.se:weld-se-core:$weldVersion",
+        "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"
+    ]
+]

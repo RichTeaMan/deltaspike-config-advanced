@@ -1,0 +1,4 @@
+rootProject.name = 'deltaspike-config-advanced'
+
+include 'deltaspike-config-advanced-external'
+include 'deltaspike-config-advanced-yaml'
