@@ -1,3 +1,5 @@
+https://api.travis-ci.org/chattersley/deltaspike-config-advanced.svg?branch=master
+
 # README #
 
 This README would normally document whatever steps are necessary to get your application up and running.
