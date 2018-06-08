@@ -1,4 +1,4 @@
-https://api.travis-ci.org/chattersley/deltaspike-config-advanced.svg?branch=master
+[![Build Status](https://api.travis-ci.org/chattersley/deltaspike-config-advanced.svg?branch=master)]
 
 # README #
 
