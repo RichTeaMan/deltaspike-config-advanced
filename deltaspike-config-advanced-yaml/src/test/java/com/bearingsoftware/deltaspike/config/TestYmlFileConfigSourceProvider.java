@@ -26,12 +26,15 @@ public class TestYmlFileConfigSourceProvider extends YmlFileConfigSourceProvider
   /** Property file name. */
   private static final String PROPERTY_FILE = "test.yaml";
 
+  /** Configuration folder key. */
+  private static final String CONFIGURATION_FOLDER_KEY = "yaml.properties.folder";
+
   /**
    * {@inheritDoc}.
    */
   @Override
   public String getConfigurationFolderKey() {
-    return "yaml.properties.folder";
+    return CONFIGURATION_FOLDER_KEY;
   }
 
   /**

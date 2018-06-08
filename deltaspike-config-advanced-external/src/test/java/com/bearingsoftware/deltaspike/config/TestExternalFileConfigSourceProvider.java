@@ -22,11 +22,15 @@ import com.bearingsoftware.deltaspike.config.ExternalFileConfigSourceProvider;
  */
 @ApplicationScoped
 public class TestExternalFileConfigSourceProvider extends ExternalFileConfigSourceProvider {
+
   /** Prefix. */
   private static final String PREFIX = "test";
 
   /** Property file name. */
   private static final String PROPERTY_FILE = "test.properties";
+
+  /** Configuration folder key. */
+  private static final String CONFIGURATION_FOLDER_KEY = "test.properties.folder";
 
   /**
    * {@inheritDoc}.
@@ -41,7 +45,7 @@ public class TestExternalFileConfigSourceProvider extends ExternalFileConfigSour
    */
   @Override
   public String getConfigurationFolderKey() {
-    return "test.properties.folder";
+    return CONFIGURATION_FOLDER_KEY;
   }
 
   /**
@@ -51,5 +55,4 @@ public class TestExternalFileConfigSourceProvider extends ExternalFileConfigSour
   public String getPropertyFile() {
     return PROPERTY_FILE;
   }
-
 }
